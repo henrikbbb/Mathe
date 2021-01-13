@@ -3,17 +3,17 @@ let cTrue;
 let cFalse;
 let inputs = [];
 let colors = [];
-let results = [];
+let amounts = [];
 let aufgabe = 1;
 let correct;
 let wrong = 0;
 
+let draw2b = false;
+
 let buttonNext;
 
-// Beschriftung: 1./2. Ziehung
-
 function setup() {
-	createCanvas(1000, 800);
+	createCanvas(1200, 700);
 	
 	cNeutral = color(255, 255, 255, 150);
 	cTrue = color(0, 255, 0, 150);
@@ -42,12 +42,12 @@ function draw() {
 	drawLines();
 	
 	// Anzahl Kugeln
-	let n = results.length;
+	let n = amounts.length;
 	textSize(50);
 	textAlign(CENTER, CENTER);
 	for (let i = 0; i < n; i++){
 		fill(colors[i]);
-		text(results[i], width-n*50+i*50, 50);
+		text(amounts[i], width-n*50+i*50, 50);
 	}
 	
 	// Error Box
@@ -55,7 +55,7 @@ function draw() {
 		wrong--;
 		noStroke();
 		fill(0);
-		rect(width/8, height/3, width*3/4, height/3);
+		rect(width/4, height*2/5, width/2, height/5);
 		fill(255);
 		textAlign(CENTER, CENTER);
 		text('Es gibt noch Fehler.', width/2, height/2);
@@ -67,22 +67,22 @@ function draw() {
 	textAlign(CENTER, CENTER);
 	textSize(20);
 	text('1. Ziehung', 100, 50);
-	text('2. Ziehung', 400, 50);
+	text('2. Ziehung', 400, 50);		
 	
-}
-
-function drawAufgabe(n){
-	if (n == 1){
-		drawAufgabe1();
-	} else if (n == 2){
-		drawAufgabe2();
+	// 2b
+	if (draw2b){
+		fill(0);
+		textAlign(LEFT, CENTER);
+		textSize(20);	
+		text('P(gleiche Farbe)=', width - 300, 150);
+		text('P(kein rot)=', width - 300, 200);
 	}
 }
 
 function drawLines(){
 	stroke(0);
 	strokeWeight(5);
-	let n = results.length;
+	let n = amounts.length;
 	
 	for (let i = 0; i < n; i++){
 		let y = i*height/n + height/n/2;
@@ -139,23 +139,20 @@ function setupButtons(){
 	buttonClear.size(x, y);
 	
 	buttonNext = createButton('nächste Aufgabe');
-	buttonNext.mousePressed(submit1);
+	buttonNext.mousePressed(submit);
 	buttonNext.position(width, 2*y);
 	buttonNext.size(x, y);	
 }
 
 function setupInputs(){	
-	let sum = 0;
-	for (let i = 0; i < results.length; i++){
-		sum += results[i];
-	}
+	let sum = sumAmount();
 	
-	let n = results.length;
+	let n = amounts.length;
 	
 	// 1. Ziehung
 	for (let i = 0; i < n; i++){
 		let y = height*(n+1+i*2)/(4*n);
-		let result = results[i]/sum;
+		let result = amounts[i]/sum;
 		inputs.push(new Input(250, y, result));
 	}	
 	
@@ -163,7 +160,7 @@ function setupInputs(){
 	for (let i = 0; i < n*n; i++){
 		let p = int(i/n);
 		let y = p*height/n+height*(n+1+(i%n)*2)/(4*n*n);
-		let result = results[i % n]/sum;
+		let result = amounts[i % n]/sum;
 		inputs.push(new Input(550, y, result));
 	}
 	
@@ -171,7 +168,7 @@ function setupInputs(){
 	for (let i = 0; i < n*n; i++){
 		let y = i*height/(n*n) + height/(n*n)/2;
 		let p = int(i/n);
-		let result = inputs[p].result*results[i % n]/sum;
+		let result = inputs[p].result*amounts[i % n]/sum;
 		inputs.push(new Input(740, y, result));
 	}
 }
@@ -181,6 +178,22 @@ function clearInputs(){
 		let input = inputs[i];
 		input.input.value('');
 		input.input.style('background-color', cNeutral);
+	}
+}
+
+function sumAmount(){
+	let sum = 0;
+	for (let i = 0; i < amounts.length; i++){
+		sum += amounts[i];
+	}
+	return sum;
+}
+
+function submit(){
+	if (aufgabe == 1){
+		submit1();
+	} else if (aufgabe == 2){
+		submit2();
 	}
 }
 
