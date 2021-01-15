@@ -5,7 +5,7 @@ function setupAufgabe1(){
 
 function submit1(){
 	checkInputs();
-	if (correct){
+	if (cheat || correct){
 		for (let i = 0; i < inputs.length; i++){
 			let input = inputs[i];
 			input.input.hide();
@@ -13,7 +13,6 @@ function submit1(){
 		inputs = [];
 		aufgabe = 2;
 		setupAufgabe2();
-		//buttonNext.hide();
 	}else{
 		wrong = 100;
 	}

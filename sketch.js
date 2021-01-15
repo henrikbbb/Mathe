@@ -1,6 +1,7 @@
 let cNeutral;
 let cTrue;
 let cFalse;
+let cHighlight;
 let inputs = [];
 let colors = [];
 let amounts = [];
@@ -8,16 +9,25 @@ let aufgabe = 1;
 let correct;
 let wrong = 0;
 
-let draw2b = false;
+let draw3 = false;
 
 let buttonNext;
+
+let cheat = true;
+
+let t;
+let h;
 
 function setup() {
 	createCanvas(1200, 700);
 	
+	t = height/30;
+	h = height - t;
+	
 	cNeutral = color(255, 255, 255, 150);
 	cTrue = color(0, 255, 0, 150);
 	cFalse = color(255, 0, 0, 150);
+	cHighlight = color(255, 255, 0, 150);
 	
 	let red = color(255, 0, 0);
 	let blue = color(0, 0, 255);
@@ -38,7 +48,6 @@ function setup() {
 
 function draw() {
 	background(200);
-	//drawAufgabe(aufgabe);	
 	drawLines();
 	
 	// Anzahl Kugeln
@@ -61,21 +70,24 @@ function draw() {
 		text('Es gibt noch Fehler.', width/2, height/2);
 	}
 	
-	// Ziehung
+	// Text
 	fill(0);
 	noStroke();
 	textAlign(CENTER, CENTER);
 	textSize(20);
-	text('1. Ziehung', 100, 50);
-	text('2. Ziehung', 400, 50);		
+	let y = 20;
+	text('1. Ziehung', 100, y);
+	text('2. Ziehung', 400, y);	
+	text('Pfadwahscheinlichkeit', 740, y);	
 	
 	// 2b
-	if (draw2b){
+	if (draw3){
 		fill(0);
 		textAlign(LEFT, CENTER);
 		textSize(20);	
 		text('P(gleiche Farbe)=', width - 300, 150);
 		text('P(kein rot)=', width - 300, 200);
+		text('P(2. Kugel blau)=', width - 300, 250);
 	}
 }
 
@@ -85,15 +97,15 @@ function drawLines(){
 	let n = amounts.length;
 	
 	for (let i = 0; i < n; i++){
-		let y = i*height/n + height/n/2;
+		let y = t + i*h/n + h/n/2;
 		stroke(colors[i]);
-		line(100, height/2, 400, y);
+		line(100, t+h/2, 400, y);
 	}	
 	
 	for (let i = 0; i < n*n; i++){
 		let p = int(i/n);
-		let y1 = p*height/n + height/n/2;
-		let y2 = i*height/(n*n) + height/(n*n)/2;
+		let y1 = t + p*h/n + h/n/2;
+		let y2 = t + i*h/(n*n) + h/(n*n)/2;
 		stroke(colors[i%n]);
 		line(400, y1, 700, y2);
 	}
@@ -101,9 +113,9 @@ function drawLines(){
 	fill(0);
 	noStroke();
 	let r = 20;
-	circle(100, height/2, r);
+	circle(100, t + h/2, r);
 	for (let i = 0; i < n; i++){
-		let y1 = i*height/n + height/n/2;
+		let y1 = t + i*h/n + h/n/2;
 		circle(400, y1, r);
 	}
 }
@@ -145,13 +157,12 @@ function setupButtons(){
 }
 
 function setupInputs(){	
-	let sum = sumAmount();
-	
+	let sum = sumAmount();	
 	let n = amounts.length;
 	
 	// 1. Ziehung
 	for (let i = 0; i < n; i++){
-		let y = height*(n+1+i*2)/(4*n);
+		let y = t+ h*(n+1+i*2)/(4*n);
 		let result = amounts[i]/sum;
 		inputs.push(new Input(250, y, result));
 	}	
@@ -159,14 +170,14 @@ function setupInputs(){
 	// 2. Ziehung
 	for (let i = 0; i < n*n; i++){
 		let p = int(i/n);
-		let y = p*height/n+height*(n+1+(i%n)*2)/(4*n*n);
+		let y = t + p*h/n+h*(n+1+(i%n)*2)/(4*n*n);
 		let result = amounts[i % n]/sum;
 		inputs.push(new Input(550, y, result));
 	}
 	
 	// Pfad-WS
 	for (let i = 0; i < n*n; i++){
-		let y = i*height/(n*n) + height/(n*n)/2;
+		let y = t + i*h/(n*n) + h/(n*n)/2;
 		let p = int(i/n);
 		let result = inputs[p].result*amounts[i % n]/sum;
 		inputs.push(new Input(740, y, result));
@@ -177,8 +188,8 @@ function clearInputs(){
 	for (let i = 0; i < inputs.length; i++){
 		let input = inputs[i];
 		input.input.value('');
-		input.input.style('background-color', cNeutral);
 	}
+	clearColor();
 }
 
 function sumAmount(){
@@ -187,6 +198,13 @@ function sumAmount(){
 		sum += amounts[i];
 	}
 	return sum;
+}
+
+function clearColor(){
+	for (let i = 0; i < inputs.length; i++){
+		let input = inputs[i];
+		input.input.style('background-color', cNeutral);
+	}
 }
 
 function submit(){
