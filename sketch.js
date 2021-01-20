@@ -17,6 +17,7 @@ let cheat = true;
 
 let t;
 let h;
+let yc = 10;
 
 function setup() {
 	createCanvas(1200, 700);
@@ -46,18 +47,56 @@ function setup() {
 	setupAufgabe1();
 }
 
+function drawUrne(x, y, w, h){
+	noFill();
+	stroke(0);
+	strokeWeight(10);
+	beginShape();
+	curveVertex(x+w/2, y);
+	curveVertex(x, y);
+	curveVertex(x, y+h);
+	curveVertex(x+w, y+h);
+	curveVertex(x+w, y);
+	curveVertex(x+w/2, y);
+	endShape();
+	noStroke();
+	fill(0);
+	textSize(25);
+	textAlign(CENTER, CENTER);
+	text('Urne', x+w/2, y+h+35);
+}
+
 function draw() {
 	background(200);
 	drawLines();
 	
+	// Anmerkung Bruchschreibweise
+	textAlign(LEFT, BOTTOM);
+	textSize(25);
+	fill(0);
+	noStroke();
+	text('Wahrscheinlichkeiten als Bruch (z.B. 1/3) angeben.', 0, height);
+	
+	// Urne
+	drawUrne(width - 200, height - 170, 150, 120);
+	
 	// Anzahl Kugeln
-	let n = amounts.length;
-	textSize(50);
-	textAlign(CENTER, CENTER);
-	for (let i = 0; i < n; i++){
+	let r = 30;
+	let gap = 5;
+	for (let i = 0; i < amounts.length; i++){
+		let h = i + 3 - amounts.length;
 		fill(colors[i]);
-		text(amounts[i], width-n*50+i*50, 50);
+		let amount = amounts[i];
+		for (let j = 0; j < amount; j++){
+			circle(j*(r+gap) + width - 160, h*(r+gap) + height - 140, r);
+		}
 	}
+	
+	// Aufgabe
+	fill(0);
+	textAlign(RIGHT, TOP);
+	textSize(40);
+	text('Aufgabe ' + aufgabe, width, 0);
 	
 	// Error Box
 	if (wrong > 0){
@@ -75,12 +114,12 @@ function draw() {
 	noStroke();
 	textAlign(CENTER, CENTER);
 	textSize(20);
-	let y = 20;
+	let y = 40;
 	text('1. Ziehung', 100, y);
 	text('2. Ziehung', 400, y);	
-	text('Pfadwahscheinlichkeit', 740, y);	
+	text('Pfadwahrscheinlichkeit', 740, y);	
 	
-	// 2b
+	// 3
 	if (draw3){
 		fill(0);
 		textAlign(LEFT, CENTER);
@@ -97,15 +136,15 @@ function drawLines(){
 	let n = amounts.length;
 	
 	for (let i = 0; i < n; i++){
-		let y = t + i*h/n + h/n/2;
+		let y = t + i*h/n + h/n/2 + yc;
 		stroke(colors[i]);
 		line(100, t+h/2, 400, y);
 	}	
 	
 	for (let i = 0; i < n*n; i++){
 		let p = int(i/n);
-		let y1 = t + p*h/n + h/n/2;
-		let y2 = t + i*h/(n*n) + h/(n*n)/2;
+		let y1 = t + p*h/n + h/n/2 + yc;
+		let y2 = t + i*h/(n*n) + h/(n*n)/2 + yc;
 		stroke(colors[i%n]);
 		line(400, y1, 700, y2);
 	}
@@ -115,8 +154,8 @@ function drawLines(){
 	let r = 20;
 	circle(100, t + h/2, r);
 	for (let i = 0; i < n; i++){
-		let y1 = t + i*h/n + h/n/2;
-		circle(400, y1, r);
+		let y = t + i*h/n + h/n/2 + yc;
+		circle(400, y, r);
 	}
 }
 
@@ -162,7 +201,7 @@ function setupInputs(){
 	
 	// 1. Ziehung
 	for (let i = 0; i < n; i++){
-		let y = t+ h*(n+1+i*2)/(4*n);
+		let y = t + h*(n+1+i*2)/(4*n) + yc;
 		let result = amounts[i]/sum;
 		inputs.push(new Input(250, y, result));
 	}	
@@ -170,14 +209,14 @@ function setupInputs(){
 	// 2. Ziehung
 	for (let i = 0; i < n*n; i++){
 		let p = int(i/n);
-		let y = t + p*h/n+h*(n+1+(i%n)*2)/(4*n*n);
+		let y = t + p*h/n+h*(n+1+(i%n)*2)/(4*n*n) + yc;
 		let result = amounts[i % n]/sum;
 		inputs.push(new Input(550, y, result));
 	}
 	
 	// Pfad-WS
 	for (let i = 0; i < n*n; i++){
-		let y = t + i*h/(n*n) + h/(n*n)/2;
+		let y = t + i*h/(n*n) + h/(n*n)/2 + yc;
 		let p = int(i/n);
 		let result = inputs[p].result*amounts[i % n]/sum;
 		inputs.push(new Input(740, y, result));

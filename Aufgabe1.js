@@ -11,7 +11,7 @@ function submit1(){
 			input.input.hide();
 		}
 		inputs = [];
-		aufgabe = 2;
+		aufgabe++;
 		setupAufgabe2();
 	}else{
 		wrong = 100;

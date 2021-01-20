@@ -7,6 +7,7 @@ function submit2(){
 	checkInputs();
 	if (cheat || correct){
 		setupAufgabe3();
+		aufgabe++;
 	}else{
 		wrong = 100;
 	}
