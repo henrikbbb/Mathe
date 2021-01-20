@@ -1,5 +1,5 @@
 function setupAufgabe1(){
-	amounts = [1, 1];
+	amounts = [3, 2];
 	setupInputs();
 }
 

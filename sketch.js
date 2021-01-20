@@ -27,7 +27,7 @@ function setup() {
 	cNeutral = color(255, 255, 255, 150);
 	cTrue = color(0, 255, 0, 150);
 	cFalse = color(255, 0, 0, 150);
-	cHighlight = color(255, 255, 0, 150);
+	cHighlight = color(255, 220, 190);
 	
 	let red = color(255, 0, 0);
 	let blue = color(0, 0, 255);
