@@ -13,7 +13,7 @@ let draw3 = false;
 
 let buttonNext;
 
-let cheat = true;
+let cheat = false;
 
 let t;
 let h;
